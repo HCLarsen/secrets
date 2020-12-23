@@ -24,10 +24,22 @@ class Any
     @raw.as(String)
   end
 
+  # Checks that the underlying value is `String`, and returns its value.
+  # Returns `nil` otherwise.
+  def as_s? : String?
+    @raw.as?(String)
+  end
+
   # Checks that the underlying value is `Array(String)`, and returns its value.
   # Raises otherwise.
   def as_a : Array(String)
     @raw.as(Array).map { |e| e.as_s }
+  end
+
+  # Checks that the underlying value is `Array(String)`, and returns its value.
+  # Returns `nil` otherwise.
+  def as_a? : Array(String)?
+    @raw.is_a?(Array) ? self.as_a : nil
   end
 
   # Checks that the underlying value is `Hash(String, String)`, and returns its value.
@@ -42,5 +54,11 @@ class Any
       end
     end
     Hash.zip(keys, values)
+  end
+
+  # Checks that the underlying value is `Hash(String, String)`, and returns its value.
+  # Returns `nil` otherwise.
+  def as_h? : Hash(String, String)?
+    @raw.is_a?(Hash) ? self.as_h : nil
   end
 end
