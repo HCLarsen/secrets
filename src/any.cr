@@ -88,11 +88,7 @@ class Any
   def as_h : Hash(String, String)
     keys = @raw.as(Hash).keys
     values = @raw.as(Hash).values.map do |e|
-      if e.is_a? Any
-        e.as_s
-      else
-        e
-      end
+      e.as_s
     end
     Hash.zip(keys, values)
   end
