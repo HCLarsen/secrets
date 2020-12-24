@@ -51,6 +51,31 @@ class AnyTest < Minitest::Test
     refute any.as_a?
   end
 
+  def test_returns_nested_hash_values
+    hash = Any.new({ "Hello" => Any.new({"World" => "!"}) })
+    assert_equal "!", hash["Hello"]["World"].as_s
+  end
+
+  def test_returns_nested_array_values
+    array = Any.new([Any.new(["Hello", "World"]), Any.new(["Bonjour", "le monde"])])
+    assert_equal "World", array[0][1].as_s
+  end
+
+  def test_assigns_nested_hash_values
+    any = Any.new({"first" => "Hello"})
+    any["second"] = {} of String => Any
+    any["second"]["level"] = "World"
+
+    assert_equal "World", any["second"]["level"].as_s
+  end
+
+  def test_assigns_nested_array_values
+    array = Any.new([Any.new(["0", "1", "2"])])
+    array[0][2] = "5"
+
+    assert_equal "5", array[0][2].as_s
+  end
+
   # def test_parses_yaml
   # end
 end
