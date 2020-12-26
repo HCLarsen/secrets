@@ -76,6 +76,13 @@ class AnyTest < Minitest::Test
     assert_equal "5", array[0][2].as_s
   end
 
-  # def test_parses_yaml
-  # end
+  def test_parses_and_generates_yaml
+    yaml = "---\nlogin:\n  username: warmachine68@starkindustries.com\n  password: WARMACHINEROX\n"
+    
+    any = Any.from_yaml(yaml)
+    assert_equal "warmachine68@starkindustries.com", any["login"]["username"].as_s
+    assert_equal "WARMACHINEROX", any["login"]["password"].as_s
+
+    assert_equal yaml, any.to_yaml
+  end
 end
