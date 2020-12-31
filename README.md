@@ -1,5 +1,7 @@
 # secrets.cr
 
+**DO NOT USE - BREAKING CHANGES MAY STILL COME**
+
 Encrypted credentials management system, largely based on [Rails/secrets](https://github.com/rails/rails/blob/3a69bcdf1fff15234410a598617767203ab38eae/railties/lib/rails/secrets.rb)
 
 ## Shard
