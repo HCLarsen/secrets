@@ -17,7 +17,7 @@ class Secrets
   # Generates the encrypted file and key file.
   #
   # If this command is run from the same directory as the `gitignore` file, it
-  # will also read the file, and add ``*.key` to it if necessary.
+  # will also read the file, and add the key file to it if necessary.
   #
   def self.generate(path = "secrets.yml.enc", key_path = "secrets.key")
     File.new(path_with_extension(path), "w")
