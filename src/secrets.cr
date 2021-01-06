@@ -1,7 +1,15 @@
 require "openssl"
 require "./any"
 
-# TODO: Write documentation for `Secrets`
+# The Secrets class keeps track of a YAML-like structure of secrets for an
+# application, and is responsible for encrypting and decrypting the file where
+# those secrets are stored.
+#
+# Note: Whenever any change is made to the data in the Secrets object, it will
+# save, and then reload the data from the file. This not only results in the
+# secrets data being saved in the event of a system failure, but also
+# ensures a single source of truth.
+#
 class Secrets
   VERSION = "0.1.0"
 
