@@ -27,6 +27,9 @@ class Secrets
   # If this command is run from the same directory as the `gitignore` file, it
   # will also read the file, and add the key file to it if necessary.
   #
+  # Note: This command won't create any folders required, and will throw a
+  # NotFoundError if the path doesn't exist.
+  #
   def self.generate(path = "secrets.yml.enc", key_path = "secrets.key")
     File.new(path_with_extension(path), "w")
     key = Secrets.generate_key

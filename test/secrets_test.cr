@@ -66,6 +66,22 @@ class SecretsTest < Minitest::Test
     assert_match /[\w\d]+/, key
   end
 
+  def test_generates_custom_files
+    Dir.mkdir_p("config")
+    Secrets.generate("config/credentials.yml.enc", "config/master.key")
+
+    assert File.exists?("config/credentials.yml.enc")
+    assert File.exists?("config/master.key")
+
+    key = File.read("config/master.key")
+    assert_match /[\w\d]+/, key
+
+    # Clean up
+    File.delete("config/credentials.yml.enc") if File.exists?("config/credentials.yml.enc")
+    File.delete("config/master.key") if File.exists?("config/master.key")
+    Dir.delete("config") if Dir.exists?("config")
+  end
+
   def test_modifies_gitignore_file
     File.touch(".gitignore")
 
