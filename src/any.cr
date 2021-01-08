@@ -135,13 +135,6 @@ class Any
   def self.from_yaml(yaml : String) : Any
     parsed = YAML.parse(yaml)
     Any.new(parsed)
-  #   if hash = parsed.as_h?
-  #     # Any.new(hash)
-  #   elsif string = parsed.as_s?
-  #     Any.new(string)
-  #   end
-  #   # hash = Hash(String, String).from_yaml(yaml)
-  #   # Any.new(hash)
   end
 
   def to_yaml(yaml : YAML::Nodes::Builder)
