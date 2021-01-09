@@ -23,6 +23,7 @@ class Any
   # end
 
   # Creates an `Any` that wraps the given `Type`.
+  #
   def initialize(@raw : Type)
   end
 
@@ -38,6 +39,7 @@ class Any
     @raw = Hash.zip(keys, values)
   end
 
+  # Creates an `Any` from the raw value of a `YAML::Any`.
   def initialize(any : YAML::Any)
     value = any.raw
     case value
@@ -77,6 +79,10 @@ class Any
     end
 	end
 
+  # Assumes the underlying value is an `Array` or `Hash`
+  # and assigns a value at the given *index_or_key*.
+  #
+  # Raises if the underlying value is not an `Array` nor a `Hash`.
   def []=(index_or_key : Int32 | String, value : Type)
     case object = @raw
     when Array

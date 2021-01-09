@@ -11,6 +11,8 @@ require "./any"
 # ensures a single source of truth.
 #
 class Secrets
+  VERSION = "0.1.0"
+
   class MissingKeyError < RuntimeError
     def initialize
       super <<-end_of_message
@@ -19,8 +21,6 @@ class Secrets
       end_of_message
     end
   end
-
-  VERSION = "0.1.0"
 
   getter file_path : String
   getter key_path : String
@@ -40,13 +40,14 @@ class Secrets
     @data = Any.from_yaml(decrypted)
   end
 
-  # Generates the encrypted file and key file.
+  # Generates an encrypted secrets file and key file at the specified locations,
+  # overwriting the files if they already exist.
   #
   # If this command is run from the same directory as the `gitignore` file, it
   # will also read the file, and add the key file to it if necessary.
   #
   # Note: This command won't create any folders required, and will throw a
-  # NotFoundError if the path doesn't exist.
+  # NotFoundError if the folder doesn't exist.
   #
   def self.generate(path = "secrets.yml.enc", key_path = "secrets.key")
     file_path = path_with_extension(path)
@@ -71,6 +72,15 @@ class Secrets
     end
   end
 
+  # Generates an encrypted secrets file and key file at the specified locations,
+  # raising an error if the files already exist.
+  #
+  # If this command is run from the same directory as the `gitignore` file, it
+  # will also read the file, and add the key file to it if necessary.
+  #
+  # Note: This command won't create any folders required, and will throw a
+  # NotFoundError if the folder doesn't exist.
+  #
   def self.generate!(path = "secrets.yml.enc", key_path = "secrets.key")
     file_path = path_with_extension(path)
     key_file_path = key_path_with_extension(key_path)
@@ -80,8 +90,11 @@ class Secrets
     generate(file_path, key_file_path)
   end
 
+  # Returns the value for the key given by *key*.
+  # If not found, returns the default value given by `Hash.new`, otherwise raises `KeyError`.
   delegate :[], to: @data
 
+  # Sets the value of *key* to the given *value*.
   def []=(index_or_key : Int32 | String, value : Any::Type)
     @data[index_or_key] = value
 
@@ -89,6 +102,8 @@ class Secrets
     File.write(@file_path, encrypted)
   end
 
+  # Encrypts *data* using the object's key and returns the encrypted data as
+  # a `String`.
   def encrypt(data : String) : String
     cipher = Secrets.new_cipher
     cipher.encrypt
@@ -96,6 +111,7 @@ class Secrets
     String.new(cipher.update(data)) + String.new(cipher.final)
   end
 
+  # Decrypts *data* using the key and returns the decrypted data as a `String`.
   def decrypt(data : String) : String
     decipher = Secrets.new_cipher
     decipher.decrypt
@@ -103,6 +119,7 @@ class Secrets
     String.new(decipher.update(data)) + String.new(decipher.final)
   end
 
+  # Returns the encryption key.
   def key
     ENV["SECRETS_KEY"]? || read_key_file || handle_missing_key
   end
