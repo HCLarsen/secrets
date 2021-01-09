@@ -11,15 +11,33 @@ require "./any"
 # ensures a single source of truth.
 #
 class Secrets
+  class MissingKeyError < RuntimeError
+    def initialize
+      super <<-end_of_message
+        Missing encryption key to decrypt secrets with.
+        Ask your team for your master key and put it in ENV["SECRETS_KEY"]
+      end_of_message
+    end
+  end
+
   VERSION = "0.1.0"
 
   getter file_path : String
   getter key_path : String
-  @data = Any.new({} of String => Any)
+  @data : Any
 
+  # Initializes a new `Secrets` object, and loads it from the encrypted YAML
+  # file at the specified location.
+  #
+  # Raises a File::NotFoundError if the specified secrets file doesn't exist.
+  #
   def initialize(file_path = "secrets.yml.enc", key_path = "secrets.key")
     @file_path = Secrets.path_with_extension(file_path)
     @key_path = Secrets.key_path_with_extension(key_path)
+
+    encrypted = File.read(@file_path)
+    decrypted = decrypt(encrypted)
+    @data = Any.from_yaml(decrypted)
   end
 
   # Generates the encrypted file and key file.
@@ -31,9 +49,19 @@ class Secrets
   # NotFoundError if the path doesn't exist.
   #
   def self.generate(path = "secrets.yml.enc", key_path = "secrets.key")
-    File.new(path_with_extension(path), "w")
+    file_path = path_with_extension(path)
+    key_file_path = key_path_with_extension(key_path)
+
     key = Secrets.generate_key
-    File.write(key_path_with_extension(key_path), key)
+    File.write(key_file_path, key)
+
+    text = "# location: #{path}"
+    cipher = Secrets.new_cipher
+    cipher.encrypt
+    cipher.key = key
+    encrypted = String.new(cipher.update(text)) + String.new(cipher.final)
+
+    File.write(file_path, encrypted)
 
     if File.exists?(".gitignore")
       ignore_content = key_path_with_extension(key_path)
@@ -43,8 +71,41 @@ class Secrets
     end
   end
 
+  def self.generate!(path = "secrets.yml.enc", key_path = "secrets.key")
+    file_path = path_with_extension(path)
+    key_file_path = key_path_with_extension(key_path)
+    raise File::AlreadyExistsError.new("Secrets file already exists", file: file_path) if File.exists?(file_path)
+    raise File::AlreadyExistsError.new("Key file already exists", file: key_file_path) if File.exists?(key_file_path)
+
+    generate(file_path, key_file_path)
+  end
+
   delegate :[], to: @data
-  delegate :[]=, to: @data
+
+  def []=(index_or_key : Int32 | String, value : Any::Type)
+    @data[index_or_key] = value
+
+    encrypted = encrypt(@data.to_yaml)
+    File.write(@file_path, encrypted)
+  end
+
+  def encrypt(data : String) : String
+    cipher = Secrets.new_cipher
+    cipher.encrypt
+    cipher.key = key
+    String.new(cipher.update(data)) + String.new(cipher.final)
+  end
+
+  def decrypt(data : String) : String
+    decipher = Secrets.new_cipher
+    decipher.decrypt
+    decipher.key = key
+    String.new(decipher.update(data)) + String.new(decipher.final)
+  end
+
+  def key
+    ENV["SECRETS_KEY"]? || read_key_file || handle_missing_key
+  end
 
   protected def self.path_with_extension(path : String) : String
     extension = ".yml.enc"
@@ -64,12 +125,22 @@ class Secrets
     end
   end
 
-  protected def self.generate_key
+  protected def self.generate_key : String
     cipher = new_cipher
     Random::Secure.hex(cipher.key_len)[0, cipher.key_len]
   end
 
-  private def self.new_cipher
+  protected def self.new_cipher : OpenSSL::Cipher
     OpenSSL::Cipher.new("aes-256-cbc")
+  end
+
+  private def handle_missing_key
+    raise Secrets::MissingKeyError.new
+  end
+
+  private def read_key_file : String?
+    if File.exists?(@key_path)
+      File.read(@key_path)
+    end
   end
 end
