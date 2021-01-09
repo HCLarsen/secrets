@@ -52,7 +52,9 @@ class Secrets
     key = Secrets.generate_key
     File.write(key_file_path, key)
 
-    text = "# location: #{path}"
+    name = File.basename(file_path)
+    text = "# Secrets file: #{name}"
+    
     cipher = Secrets.new_cipher
     cipher.encrypt
     cipher.key = key
