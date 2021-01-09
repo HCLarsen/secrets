@@ -5,6 +5,32 @@ require "./secrets/any"
 # application, and is responsible for encrypting and decrypting the file where
 # those secrets are stored.
 #
+# The instantiation of a Secrets object loads data from an encoded YAML file,
+# and presents the data as a hash-like object.
+#
+# ```
+# secrets = Secrets.new
+# secrets["username"] #=> "warmachine68@starkindustries.com"
+# ```
+#
+# An alternate way to use the library is with the `Secrets#raw`, combined with
+# the `YAML::Serializable` module.
+#
+# ```
+# class MySecrets
+#   include YAML::Serializable
+#
+#   property username : String
+#   property password : String
+# end
+#
+# secrets = Secrets.new
+# secrets.raw #=> "---\nusername: warmachine68@starkindustries.com\npassword: WARMACHINEROX\n"
+#
+# my_secrets = MySecrets.from_yaml(secrets.raw)
+# my_secrets["username"]  #=> warmachine68@starkindustries.com
+#
+# ```
 # Note: Changes to the internal data of a `Secrets` object doesn't result in
 # data being saved to the file. If this is intended behaviour, it must be done
 # manually.
@@ -127,6 +153,21 @@ class Secrets
   end
 
   # Returns the raw YAML of the Secrets file
+  #
+  # This allows the use of `Secrets` with the `YAML::Serializable` module.
+  #
+  # ```
+  # class MySecrets
+  #   include YAML::Serializable
+  #
+  #   property username : String
+  #   property password : String
+  # end
+  #
+  # my_secrets = MySecrets.from_yaml(Secrets.new.raw)
+  # my_secrets["username"]  #=> warmachine68@starkindustries.com
+  #
+  # ```
   def raw : String
     @data.to_yaml
   end

@@ -2,6 +2,13 @@ require "minitest/autorun"
 
 require "/../src/secrets.cr"
 
+class MySecrets
+  include YAML::Serializable
+
+  property username : String
+  property password : String
+end
+
 class SecretsTest < Minitest::Test
   @default_path = "secrets.yml.enc"
   @default_key_path = "secrets.key"
@@ -165,5 +172,8 @@ class SecretsTest < Minitest::Test
 
     secrets = Secrets.new
     assert_equal expected, secrets.raw
+
+    my_secrets = MySecrets.from_yaml(secrets.raw)
+    assert_equal "WARMACHINEROX", my_secrets.password
   end
 end
