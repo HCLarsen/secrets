@@ -157,4 +157,13 @@ class SecretsTest < Minitest::Test
     secrets2 = Secrets.new("config/credentials.yml.enc", "config/master.key")
     assert_equal "warmachine68@starkindustries.com", secrets2["login"]["username"].as_s
   end
+
+  def test_produces_raw_yaml
+    expected = "---\nusername: warmachine68@starkindustries.com\npassword: WARMACHINEROX\n"
+
+    generate_secrets
+
+    secrets = Secrets.new
+    assert_equal expected, secrets.raw
+  end
 end

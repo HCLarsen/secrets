@@ -52,13 +52,10 @@ class Secrets
     key = Secrets.generate_key
     File.write(key_file_path, key)
 
-    name = File.basename(file_path)
-    text = "# Secrets file: #{name}"
-    
     cipher = Secrets.new_cipher
     cipher.encrypt
     cipher.key = key
-    encrypted = String.new(cipher.update(text)) + String.new(cipher.final)
+    encrypted = String.new(cipher.update("---")) + String.new(cipher.final)
 
     File.write(file_path, encrypted)
 
@@ -127,6 +124,11 @@ class Secrets
     decipher.decrypt
     decipher.key = @key
     String.new(decipher.update(data)) + String.new(decipher.final)
+  end
+
+  # Returns the raw YAML of the Secrets file
+  def raw : String
+    @data.to_yaml
   end
 
   protected def self.path_with_extension(path : String) : String
