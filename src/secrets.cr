@@ -1,5 +1,5 @@
 require "openssl"
-require "./any"
+require "./secrets/any"
 
 # The Secrets class keeps track of a YAML-like structure of secrets for an
 # application, and is responsible for encrypting and decrypting the file where

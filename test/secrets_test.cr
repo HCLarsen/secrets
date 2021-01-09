@@ -76,7 +76,7 @@ class SecretsTest < Minitest::Test
     expected = { "username" => "warmachine68@starkindustries.com", "password" => "WARMACHINEROX" }
 
     secrets = Secrets.new
-    secrets["login"] = { "username" => Any.new("warmachine68@starkindustries.com"), "password" => Any.new("WARMACHINEROX") }
+    secrets["login"] = { "username" => Secrets::Any.new("warmachine68@starkindustries.com"), "password" => Secrets::Any.new("WARMACHINEROX") }
 
     secrets2 = Secrets.new
     assert_equal expected, secrets2["login"].as_h
@@ -148,7 +148,7 @@ class SecretsTest < Minitest::Test
     assert File.exists?("config/master.key")
 
     secrets = Secrets.new("config/credentials.yml.enc", "config/master.key")
-    secrets["login"] = { "username" => Any.new("warmachine68@starkindustries.com"), "password" => Any.new("WARMACHINEROX") }
+    secrets["login"] = { "username" => Secrets::Any.new("warmachine68@starkindustries.com"), "password" => Secrets::Any.new("WARMACHINEROX") }
 
     secrets2 = Secrets.new("config/credentials.yml.enc", "config/master.key")
     assert_equal "warmachine68@starkindustries.com", secrets2["login"]["username"].as_s
