@@ -5,10 +5,9 @@ require "./secrets/any"
 # application, and is responsible for encrypting and decrypting the file where
 # those secrets are stored.
 #
-# Note: Whenever any change is made to the data in the Secrets object, it will
-# save the data to the file. This not only results in the secrets data being
-# saved in the event of the app crashing.
-#
+# Note: Changes to the internal data of a `Secrets` object doesn't result in
+# data being saved to the file. If this is intended behaviour, it must be done
+# manually.
 class Secrets
   VERSION = "0.1.0"
 
@@ -96,13 +95,7 @@ class Secrets
   #
   # **Note:** This method results in the new value not only being stored in
   # the `Secrets` object, but also saved to the *secrets* file.
-  def []=(index_or_key : Int32 | String, value : Any::Type)
-    @data[index_or_key] = value
-
-    # encrypted = encrypt(@data.to_yaml)
-    # File.write(@file_path, encrypted)
-    save
-  end
+  delegate :[]=, to: @data
 
   # Saves data to the secrets file.
   def save

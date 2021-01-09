@@ -33,6 +33,8 @@ class SecretsTest < Minitest::Test
     secrets = Secrets.new
     secrets["username"] = "warmachine68@starkindustries.com"
     secrets["password"] = "WARMACHINEROX"
+
+    secrets.save
   end
 
   def test_initializes_with_default_paths
@@ -59,13 +61,14 @@ class SecretsTest < Minitest::Test
   def test_encrypts_and_decrypts
     username = "warmachine68@starkindustries.com"
     Secrets.generate
-    blank_contents = File.read(@default_path)
 
     secrets = Secrets.new
     secrets["username"] = username
-    saved_contents = File.read(@default_path)
+    secrets.save
 
-    refute saved_contents.includes?(username)
+    saved = File.read(@default_path)
+
+    refute saved.includes?(username)
 
     secrets2 = Secrets.new
     assert_equal username, secrets2["username"].as_s
@@ -77,10 +80,10 @@ class SecretsTest < Minitest::Test
 
     secrets = Secrets.new
     secrets["login"] = { "username" => Secrets::Any.new("warmachine68@starkindustries.com"), "password" => Secrets::Any.new("WARMACHINEROX") }
+    secrets.save
 
-    secrets2 = Secrets.new
-    assert_equal expected, secrets2["login"].as_h
-    assert_equal "warmachine68@starkindustries.com", secrets2["login"]["username"].as_s
+    assert_equal expected, secrets["login"].as_h
+    assert_equal "warmachine68@starkindustries.com", secrets["login"]["username"].as_s
   end
 
   def test_generates_default_files
@@ -149,6 +152,7 @@ class SecretsTest < Minitest::Test
 
     secrets = Secrets.new("config/credentials.yml.enc", "config/master.key")
     secrets["login"] = { "username" => Secrets::Any.new("warmachine68@starkindustries.com"), "password" => Secrets::Any.new("WARMACHINEROX") }
+    secrets.save
 
     secrets2 = Secrets.new("config/credentials.yml.enc", "config/master.key")
     assert_equal "warmachine68@starkindustries.com", secrets2["login"]["username"].as_s
