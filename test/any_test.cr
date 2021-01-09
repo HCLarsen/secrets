@@ -78,11 +78,17 @@ class AnyTest < Minitest::Test
 
   def test_parses_and_generates_yaml
     yaml = "---\nlogin:\n  username: warmachine68@starkindustries.com\n  password: WARMACHINEROX\n"
-    
+
     any = Any.from_yaml(yaml)
     assert_equal "warmachine68@starkindustries.com", any["login"]["username"].as_s
     assert_equal "WARMACHINEROX", any["login"]["password"].as_s
 
     assert_equal yaml, any.to_yaml
+  end
+
+  def test_parses_empty_yaml
+    yaml = "# Generated YAML file\n---"
+
+    assert_equal Any.from_yaml(yaml).as_h, {} of String => Any
   end
 end

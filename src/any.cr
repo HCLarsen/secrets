@@ -134,7 +134,11 @@ class Any
 
   def self.from_yaml(yaml : String) : Any
     parsed = YAML.parse(yaml)
-    Any.new(parsed)
+    if !parsed.raw.nil?
+      Any.new(parsed)
+    else
+      Any.new({} of String => Any)
+    end
   end
 
   def to_yaml(yaml : YAML::Nodes::Builder)
