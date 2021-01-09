@@ -40,7 +40,6 @@ class SecretsTest < Minitest::Test
 
     secrets = Secrets.new
     assert_equal @default_path, secrets.file_path
-    assert_equal @default_key_path, secrets.key_path
   end
 
   def test_initializes_with_custom_paths
@@ -48,7 +47,6 @@ class SecretsTest < Minitest::Test
 
     secrets = Secrets.new("config/credentials.yml.enc", "config/master.key")
     assert_equal "config/credentials.yml.enc", secrets.file_path
-    assert_equal "config/master.key", secrets.key_path
   end
 
   def test_adds_file_extension_if_not_provided
@@ -56,7 +54,6 @@ class SecretsTest < Minitest::Test
 
     secrets = Secrets.new("config/credentials", "config/master")
     assert_equal "config/credentials.yml.enc", secrets.file_path
-    assert_equal "config/master.key", secrets.key_path
   end
 
   def test_encrypts_and_decrypts

@@ -23,7 +23,7 @@ class Secrets
   end
 
   getter file_path : String
-  getter key_path : String
+  @key : String
   @data : Any
 
   # Initializes a new `Secrets` object, and loads it from the encrypted YAML
@@ -33,11 +33,9 @@ class Secrets
   #
   def initialize(file_path = "secrets.yml.enc", key_path = "secrets.key")
     @file_path = Secrets.path_with_extension(file_path)
-    @key_path = Secrets.key_path_with_extension(key_path)
+    @key = load_key(Secrets.key_path_with_extension(key_path))
 
-    encrypted = File.read(@file_path)
-    decrypted = decrypt(encrypted)
-    @data = Any.from_yaml(decrypted)
+    @data = load_data
   end
 
   # Generates an encrypted secrets file and key file at the specified locations,
@@ -98,8 +96,22 @@ class Secrets
   def []=(index_or_key : Int32 | String, value : Any::Type)
     @data[index_or_key] = value
 
+    # encrypted = encrypt(@data.to_yaml)
+    # File.write(@file_path, encrypted)
+    save
+  end
+
+  # Saves data to the secrets file.
+  def save
     encrypted = encrypt(@data.to_yaml)
     File.write(@file_path, encrypted)
+  end
+
+  # Loads the YAML data from the encrypted secrets file.
+  def load_data : Any
+    encrypted = File.read(@file_path)
+    decrypted = decrypt(encrypted)
+    Any.from_yaml(decrypted)
   end
 
   # Encrypts *data* using the object's key and returns the encrypted data as
@@ -107,7 +119,7 @@ class Secrets
   def encrypt(data : String) : String
     cipher = Secrets.new_cipher
     cipher.encrypt
-    cipher.key = key
+    cipher.key = @key
     String.new(cipher.update(data)) + String.new(cipher.final)
   end
 
@@ -115,13 +127,8 @@ class Secrets
   def decrypt(data : String) : String
     decipher = Secrets.new_cipher
     decipher.decrypt
-    decipher.key = key
+    decipher.key = @key
     String.new(decipher.update(data)) + String.new(decipher.final)
-  end
-
-  # Returns the encryption key.
-  def key
-    ENV["SECRETS_KEY"]? || read_key_file || handle_missing_key
   end
 
   protected def self.path_with_extension(path : String) : String
@@ -151,13 +158,17 @@ class Secrets
     OpenSSL::Cipher.new("aes-256-cbc")
   end
 
+  private def load_key(key_path : String) : String
+    ENV["SECRETS_KEY"]? || read_key_file(key_path) || handle_missing_key
+  end
+
   private def handle_missing_key
     raise Secrets::MissingKeyError.new
   end
 
-  private def read_key_file : String?
-    if File.exists?(@key_path)
-      File.read(@key_path)
+  private def read_key_file(key_path : String) : String?
+    if File.exists?(key_path)
+      File.read(key_path)
     end
   end
 end
