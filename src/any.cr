@@ -1,5 +1,12 @@
 require "yaml"
 
+# Secrets::Any is a wrapper around the possible types stored in a `Secrets`
+# object, similar to`YAML::Any`.
+#
+# Unlike its counterpart, `Secrets::Any` is a mutible structure, allowing the
+# underlying value to be changed, as long as the new value is of the same type.
+# The other key difference from `YAML::Any` is that the leaf values can only
+# be a `String`.
 class Any
   # All valid Secrets::Any types
   alias Type = String | Array(Any) | Hash(String, Any)

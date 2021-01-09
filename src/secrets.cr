@@ -6,9 +6,8 @@ require "./any"
 # those secrets are stored.
 #
 # Note: Whenever any change is made to the data in the Secrets object, it will
-# save, and then reload the data from the file. This not only results in the
-# secrets data being saved in the event of a system failure, but also
-# ensures a single source of truth.
+# save the data to the file. This not only results in the secrets data being
+# saved in the event of the app crashing.
 #
 class Secrets
   VERSION = "0.1.0"
@@ -76,9 +75,9 @@ class Secrets
   # If this command is run from the same directory as the `gitignore` file, it
   # will also read the file, and add the key file to it if necessary.
   #
-  # Note: This command won't create any folders required, and will throw a
-  # NotFoundError if the folder doesn't exist.
-  #
+  # Note: As with the standard `generate` method, this command won't create
+  # any folders required, and will throw a NotFoundError if the folder doesn't
+  # exist.
   def self.generate!(path = "secrets.yml.enc", key_path = "secrets.key")
     file_path = path_with_extension(path)
     key_file_path = key_path_with_extension(key_path)
@@ -89,10 +88,14 @@ class Secrets
   end
 
   # Returns the value for the key given by *key*.
-  # If not found, returns the default value given by `Hash.new`, otherwise raises `KeyError`.
+  # If not found, returns the default value given by `Hash.new`, otherwise
+  # raises `KeyError`.
   delegate :[], to: @data
 
   # Sets the value of *key* to the given *value*.
+  #
+  # **Note:** This method results in the new value not only being stored in
+  # the `Secrets` object, but also saved to the *secrets* file.
   def []=(index_or_key : Int32 | String, value : Any::Type)
     @data[index_or_key] = value
 
