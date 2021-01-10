@@ -20,12 +20,12 @@ Encrypted credentials management system, largely based on [Rails/secrets](https:
 
 ### Usage
 
-The `Secrets` class has two initializers, `#load` to load secrets from an existing secrets file, and `#new`, to create a new file to load programmatically. If `#new` is used, and the specified secrets file already exists, then an error will be thrown. As `#new` is starting from scratch, it does allow for a hash literal to be passed in the creation.
+When the `Secrets` class is instantiated, it loads the data from an encoded YAML file. The key used to decode the data can either come from a local key file, or an environment variable named SECRETS_KEY.
 
 ```ruby
 require "secrets"
 
-secrets = Secrets.new{ "API1_KEY" => "RANDOM_KEY", "API2_KEY" => "OTHER_RANDOM_KEY" }
+secrets = Secrets.new
 ```
 
 Unlike similar libraries, the `Secrets` class isn't a singleton. This allows the dev to have separate files for different environments, such as development, testing, and production.
