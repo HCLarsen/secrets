@@ -83,10 +83,10 @@ class SecretsTest < Minitest::Test
 
   def test_nested_values
     Secrets.generate
-    expected = { "username" => "warmachine68@starkindustries.com", "password" => "WARMACHINEROX" }
+    expected = {"username" => "warmachine68@starkindustries.com", "password" => "WARMACHINEROX"}
 
     secrets = Secrets.new
-    secrets["login"] = { "username" => Secrets::Any.new("warmachine68@starkindustries.com"), "password" => Secrets::Any.new("WARMACHINEROX") }
+    secrets["login"] = {"username" => Secrets::Any.new("warmachine68@starkindustries.com"), "password" => Secrets::Any.new("WARMACHINEROX")}
     secrets.save
 
     assert_equal expected, secrets["login"].as_h
@@ -158,7 +158,7 @@ class SecretsTest < Minitest::Test
     assert File.exists?("config/master.key")
 
     secrets = Secrets.new("config/credentials.yml.enc", "config/master.key")
-    secrets["login"] = { "username" => Secrets::Any.new("warmachine68@starkindustries.com"), "password" => Secrets::Any.new("WARMACHINEROX") }
+    secrets["login"] = {"username" => Secrets::Any.new("warmachine68@starkindustries.com"), "password" => Secrets::Any.new("WARMACHINEROX")}
     secrets.save
 
     secrets2 = Secrets.new("config/credentials.yml.enc", "config/master.key")

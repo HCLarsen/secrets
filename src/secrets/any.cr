@@ -70,7 +70,7 @@ class Secrets
       else
         raise "Expected Array or Hash, not #{object.class}"
       end
-  	end
+    end
 
     # Assumes the underlying value is an `Array` or `Hash` and returns the element
     # at the given *index_or_key*, or `nil` if out of bounds or the key is missing.
@@ -93,7 +93,7 @@ class Secrets
       else
         raise "Expected Array or Hash, not #{object.class}"
       end
-  	end
+    end
 
     # Assumes the underlying value is an `Array` or `Hash`
     # and assigns a value at the given *index_or_key*.
@@ -110,9 +110,9 @@ class Secrets
       when Hash
         if index_or_key.is_a?(String)
           object[index_or_key] = Any.new(value)
-         end
-  		end
-  	end
+        end
+      end
+    end
 
     # Checks that the underlying value is `String`, and returns its value.
     # Raises otherwise.

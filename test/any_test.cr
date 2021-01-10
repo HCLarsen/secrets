@@ -12,8 +12,8 @@ class AnyTest < Minitest::Test
     array_any = Secrets::Any.new(array)
     assert_equal array, array_any.as_a
 
-    hash = { "Hello" => "World" }
-    hash_any = Secrets::Any.new({ "Hello" => "World" })
+    hash = {"Hello" => "World"}
+    hash_any = Secrets::Any.new({"Hello" => "World"})
     assert_equal hash, hash_any.as_h
   end
 
@@ -30,7 +30,7 @@ class AnyTest < Minitest::Test
     error = assert_raises { any.as_h }
     assert_equal TypeCastError, error.class
 
-    any = Secrets::Any.new({ "Hello" => "World" })
+    any = Secrets::Any.new({"Hello" => "World"})
     error = assert_raises { any.as_s }
     assert_equal TypeCastError, error.class
     error = assert_raises { any.as_a }
@@ -46,18 +46,18 @@ class AnyTest < Minitest::Test
     refute any.as_s?
     refute any.as_h?
 
-    any = Secrets::Any.new({ "Hello" => "World" })
+    any = Secrets::Any.new({"Hello" => "World"})
     refute any.as_s?
     refute any.as_a?
   end
 
   def test_returns_nested_hash_values
-    hash = Secrets::Any.new({ "Hello" => Secrets::Any.new({"World" => "!"}) })
+    hash = Secrets::Any.new({"Hello" => Secrets::Any.new({"World" => "!"})})
     assert_equal "!", hash["Hello"]["World"].as_s
   end
 
   def test_returns_nil_for_nonexistent_keys
-    any = Secrets::Any.new({ "Hello" => "World" })
+    any = Secrets::Any.new({"Hello" => "World"})
     refute any["Goodbye"]?
   end
 

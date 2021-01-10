@@ -10,7 +10,7 @@ require "./secrets/any"
 #
 # ```
 # secrets = Secrets.new
-# secrets["username"] #=> "warmachine68@starkindustries.com"
+# secrets["username"] # => "warmachine68@starkindustries.com"
 # ```
 #
 # An alternate way to use the library is with the `Secrets#raw`, combined with
@@ -25,11 +25,10 @@ require "./secrets/any"
 # end
 #
 # secrets = Secrets.new
-# secrets.raw #=> "---\nusername: warmachine68@starkindustries.com\npassword: WARMACHINEROX\n"
+# secrets.raw # => "---\nusername: warmachine68@starkindustries.com\npassword: WARMACHINEROX\n"
 #
 # my_secrets = MySecrets.from_yaml(secrets.raw)
-# my_secrets["username"]  #=> warmachine68@starkindustries.com
-#
+# my_secrets["username"] # => warmachine68@starkindustries.com
 # ```
 # Note: Changes to the internal data of a `Secrets` object doesn't result in
 # data being saved to the file. If this is intended behaviour, it must be done
@@ -165,8 +164,7 @@ class Secrets
   # end
   #
   # my_secrets = MySecrets.from_yaml(Secrets.new.raw)
-  # my_secrets["username"]  #=> warmachine68@starkindustries.com
-  #
+  # my_secrets["username"] # => warmachine68@starkindustries.com
   # ```
   def raw : String
     @data.to_yaml
