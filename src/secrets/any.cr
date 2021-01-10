@@ -72,6 +72,29 @@ class Secrets
       end
   	end
 
+    # Assumes the underlying value is an `Array` or `Hash` and returns the element
+    # at the given *index_or_key*, or `nil` if out of bounds or the key is missing.
+    #
+    # Raises if the underlying value is not an `Array` nor a `Hash`.
+    def []?(index_or_key : Int32 | String) : Any?
+      case object = @raw
+      when Array
+        if index_or_key.is_a?(Int)
+          object[index_or_key]?
+        else
+          raise "Expected int key for Array#[], not #{object.class}"
+        end
+      when Hash
+        if index_or_key.is_a?(String)
+          object[index_or_key]?
+        else
+          raise "Expected string key for Hash#[], not #{object.class}"
+        end
+      else
+        raise "Expected Array or Hash, not #{object.class}"
+      end
+  	end
+
     # Assumes the underlying value is an `Array` or `Hash`
     # and assigns a value at the given *index_or_key*.
     #

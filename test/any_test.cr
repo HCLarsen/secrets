@@ -56,6 +56,11 @@ class AnyTest < Minitest::Test
     assert_equal "!", hash["Hello"]["World"].as_s
   end
 
+  def test_returns_nil_for_nonexistent_keys
+    any = Secrets::Any.new({ "Hello" => "World" })
+    refute any["Goodbye"]?
+  end
+
   def test_returns_nested_array_values
     array = Secrets::Any.new([Secrets::Any.new(["Hello", "World"]), Secrets::Any.new(["Bonjour", "le monde"])])
     assert_equal "World", array[0][1].as_s

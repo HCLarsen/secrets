@@ -111,15 +111,15 @@ class Secrets
     generate(file_path, key_file_path)
   end
 
-  # Returns the value for the key given by *key*.
-  # If not found, returns the default value given by `Hash.new`, otherwise
-  # raises `KeyError`.
+  # returns the element at the given *index_or_key*, raises if out of bounds
+  # or the key is missing.
   delegate :[], to: @data
 
+  # returns the element at the given *index_or_key*, or `nil` if out of bounds
+  # or the key is missing.
+  delegate :[]?, to: @data
+
   # Sets the value of *key* to the given *value*.
-  #
-  # **Note:** This method results in the new value not only being stored in
-  # the `Secrets` object, but also saved to the *secrets* file.
   delegate :[]=, to: @data
 
   # Saves data to the secrets file.
