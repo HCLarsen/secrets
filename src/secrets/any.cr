@@ -15,21 +15,6 @@ class Secrets
     # The raw underlying value, a `Type`.
     getter raw : Type
 
-    # def initialize(ctx : YAML::ParseContext, node : YAML::Nodes::Node)
-    #   case node
-    #   when YAML::Nodes::Scalar
-    #     @raw = String.new(ctx, node)
-    #   when YAML::Nodes::Mapping
-    #     hash = {} of String => Any
-    #
-    #     node.each do |key, value|
-    #       @raw = Hash(String, Any).new(ctx, node)
-    #     end
-    #   else
-    #     raise "Unusable type: #{value.class}. Requires String, Array(String), or Hash(String, String)"
-    #   end
-    # end
-
     # Creates an `Any` that wraps the given `Type`.
     #
     def initialize(@raw : Type)
