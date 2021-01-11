@@ -10,11 +10,11 @@ Encrypted credentials management system, largely based on [Rails/secrets](https:
 
 1. Add the dependency to your `shard.yml`:
 
-   ```yaml
+```yaml
    dependencies:
      secrets:
        github: HCLarsen/secrets
-   ```
+```
 
 2. Run `shards install`
 
@@ -64,14 +64,14 @@ secrets["API2"]["PASSWORD"].as_s  #=> "DontUseACommonPassword"
 
 1. Clone this repo:
 
-   ```
-   git clone https://github.com/HCLarsen/secrets.git
-   ```
+```
+git clone https://github.com/HCLarsen/secrets.git
+```
 
 2. Build:
-   ```
-   make build-cli
-   ```
+```
+make build-cli
+```
 
 3. Move `secrets` file to a location in your $PATH.
 
