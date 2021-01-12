@@ -77,7 +77,25 @@ make build-cli
 
 ### Usage
 
-TODO: Write usage instructions here
+The Secrets cli provides a way to create, edit, and read encrypted Secrets files.
+
+The `secrets generate` command creates an empty encrypted Secrets file, and a key file. The default location is the folder that the command is run from, however the `-p` and `-k` flags can be used to set specific locations for the Secrets file and key file, respectively.
+
+```
+$ secrets generate -p production.yml.enc -k keyfile.key
+```
+
+`secrets read` will read the Secrets file and display the contents to the command line. If an optional `--key` value is provided, it will only display the value that corresponds to that key. As with the `generate` command, `-p` and `-k` flags can be used to specify locations for the files.
+
+```
+$ secrets read --key API_KEY
+```
+
+`secrets edit` requires a key value pair provided as arguments. If they key already exists in the file, it will edit the value with the one provided, otherwise, it will add the key value pair as new entries.
+
+```
+$ secrets edit API_KEY NOTAREALKEY
+```
 
 ## Development
 
