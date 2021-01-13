@@ -4,6 +4,8 @@ version: 0.1.0
 authors:
   - Chris Larsen <clarsendev@protonmail.com>
 
+description: Encrypted credentials management system, largely based on Rails/secrets
+
 development_dependencies:
   minitest:
     github: ysbaddaden/minitest.cr
