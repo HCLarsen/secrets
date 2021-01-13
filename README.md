@@ -97,6 +97,8 @@ $ secrets read --key API_KEY
 $ secrets edit API_KEY NOTAREALKEY
 ```
 
+`secrets reset` generates a new key, and re-encrypts the file with the new key. As with the `generate` command, `-p` and `-k` flags can be used to specify locations for the files.
+
 ## Development
 
 TODO: Write development instructions here
