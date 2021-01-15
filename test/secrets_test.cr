@@ -90,7 +90,10 @@ class SecretsTest < Minitest::Test
     secrets.save
 
     assert_equal expected, secrets["login"].as_h
-    assert_equal "warmachine68@starkindustries.com", secrets["login"]["username"].as_s
+    assert_equal "WARMACHINEROX", secrets["login"]["password"].as_s
+
+    secrets["login"]["password"] = "TONYSTANK"
+    assert_equal "TONYSTANK", secrets["login"]["password"].as_s
   end
 
   def test_generates_default_files

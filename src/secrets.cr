@@ -35,6 +35,8 @@ require "./secrets/any"
 # manually.
 class Secrets
   VERSION = "0.1.0"
+  DEFAULT_PATH = "secrets.yml.enc"
+  DEFAULT_KEY_PATH = "secrets.key"
 
   class MissingKeyError < RuntimeError
     def initialize
@@ -54,7 +56,7 @@ class Secrets
   #
   # Raises a File::NotFoundError if the specified secrets file doesn't exist.
   #
-  def initialize(file_path = "secrets.yml.enc", key_path = "secrets.key")
+  def initialize(file_path = DEFAULT_PATH, key_path = DEFAULT_KEY_PATH)
     @file_path = Secrets.path_with_extension(file_path)
     @key = load_key(Secrets.key_path_with_extension(key_path))
 
@@ -70,7 +72,7 @@ class Secrets
   # Note: This command won't create any folders required, and will throw a
   # NotFoundError if the folder doesn't exist.
   #
-  def self.generate(path = "secrets.yml.enc", key_path = "secrets.key")
+  def self.generate(path = DEFAULT_PATH, key_path = DEFAULT_KEY_PATH)
     file_path = path_with_extension(path)
     key_file_path = key_path_with_extension(key_path)
 
@@ -101,7 +103,7 @@ class Secrets
   # Note: As with the standard `generate` method, this command won't create
   # any folders required, and will throw a NotFoundError if the folder doesn't
   # exist.
-  def self.generate!(path = "secrets.yml.enc", key_path = "secrets.key")
+  def self.generate!(path = DEFAULT_PATH, key_path = DEFAULT_KEY_PATH)
     file_path = path_with_extension(path)
     key_file_path = key_path_with_extension(key_path)
     raise File::AlreadyExistsError.new("Secrets file already exists", file: file_path) if File.exists?(file_path)
