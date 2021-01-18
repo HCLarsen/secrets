@@ -34,8 +34,8 @@ require "./secrets/any"
 # data being saved to the file. If this is intended behaviour, it must be done
 # manually.
 class Secrets
-  VERSION = "0.1.0"
-  DEFAULT_PATH = "secrets.yml.enc"
+  VERSION          = "0.1.0"
+  DEFAULT_PATH     = "secrets.yml.enc"
   DEFAULT_KEY_PATH = "secrets.key"
 
   class MissingKeyError < RuntimeError

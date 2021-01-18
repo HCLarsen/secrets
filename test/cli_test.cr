@@ -1,6 +1,6 @@
 require "minitest/autorun"
 
-require "/../src/cli.cr"
+require "/../src/secrets.cr"
 
 class CLITest < Minitest::Test
   @default_path = "secrets.yml.enc"
@@ -84,6 +84,64 @@ class CLITest < Minitest::Test
     assert_equal "0.1.0\n", response
   end
 
-  def test_displays_help
+  def test_overall_help
+    help = <<-HELP
+    Usage: secrets [arguments]
+        generate                         Create new secrets and key files
+        read                             Read the contents of the encrypted file
+        edit                             Edit a value in the encrypted file
+        -h, --help                       Show this help
+        -v, --version                    Returns version\n
+    HELP
+
+    response = `crystal run src/cli.cr -- -h`
+    assert_equal help, response
+
+    response = `crystal run src/cli.cr`
+    assert_equal help, response
+  end
+
+  def test_subcommand_help
+    help = <<-HELP
+    Usage: secrets generate [arguments]
+        -y PATH, --yaml-file PATH        File path
+        -f KEY_PATH, --key-file KEY_PATH Key file path
+        -h, --help                       Show this help\n
+    HELP
+
+    response = `crystal run src/cli.cr -- generate -h`
+    assert_equal help, response
+
+    help = <<-HELP
+    Usage: secrets read [arguments]
+        -y PATH, --yaml-file PATH        File path
+        -f KEY_PATH, --key-file KEY_PATH Key file path
+        -k KEY, --key KEY                Key for value
+        -h, --help                       Show this help\n
+    HELP
+
+    response = `crystal run src/cli.cr -- read -h`
+    assert_equal help, response
+
+    response = `crystal run src/cli.cr -- read -k`
+    assert_equal help, response
+
+    help = <<-HELP
+    Usage: secrets edit [arguments]
+        -y PATH, --yaml-file PATH        File path
+        -f KEY_PATH, --key-file KEY_PATH Key file path
+        -k KEY, --key KEY                Key for value
+        -n VALUE, --new-value VALUE      New Value
+        -h, --help                       Show this help\n
+    HELP
+
+    response = `crystal run src/cli.cr -- edit -h`
+    assert_equal help, response
+
+    response = `crystal run src/cli.cr -- edit -k`
+    assert_equal help, response
+
+    response = `crystal run src/cli.cr -- edit`
+    assert_equal help, response
   end
 end

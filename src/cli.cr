@@ -10,15 +10,41 @@ value = nil
 paths_parser = OptionParser.new do |parser|
   parser.on("-y PATH", "--yaml-file PATH", "File path") { |_path| path = _path }
   parser.on("-f KEY_PATH", "--key-file KEY_PATH", "Key file path") { |_key_path| key_path = _key_path }
+  parser.on("-h", "--help", "Show this help") do
+    puts parser
+    exit
+  end
 end
 
-key_parser = OptionParser.new do |parser|
-  parser.on("-k KEY ", "--key KEY ", "Key for value") { |_key| key = _key }
+read_parser = OptionParser.new do |parser|
+  parser.banner = "Usage: secrets read [arguments]"
+  parser.on("-y PATH", "--yaml-file PATH", "File path") { |_path| path = _path }
+  parser.on("-f KEY_PATH", "--key-file KEY_PATH", "Key file path") { |_key_path| key_path = _key_path }
+  parser.on("-k KEY", "--key KEY ", "Key for value") { |_key| key = _key }
+  parser.on("-h", "--help", "Show this help") do
+    puts parser
+    exit
+  end
+  parser.missing_option do |flag|
+    puts parser
+    exit
+  end
 end
 
-value_parser = OptionParser.new do |parser|
-  parser.on("-k KEY ", "--key KEY ", "Key for value") { |_key| key = _key }
-  parser.on("-n NEWVALUE", "--new-value NEWVALUE", "New Value") { |_value| value = _value }
+edit_parser = OptionParser.new do |parser|
+  parser.banner = "Usage: secrets edit [arguments]"
+  parser.on("-y PATH", "--yaml-file PATH", "File path") { |_path| path = _path }
+  parser.on("-f KEY_PATH", "--key-file KEY_PATH", "Key file path") { |_key_path| key_path = _key_path }
+  parser.on("-k KEY", "--key KEY ", "Key for value") { |_key| key = _key }
+  parser.on("-n VALUE", "--new-value VALUE", "New Value") { |_value| value = _value }
+  parser.on("-h", "--help", "Show this help") do
+    puts parser
+    exit
+  end
+  parser.missing_option do |flag|
+    puts parser
+    exit
+  end
 end
 
 parser = OptionParser.new do |parser|
@@ -27,9 +53,11 @@ parser = OptionParser.new do |parser|
     paths_parser.banner = "Usage: secrets generate [arguments]"
     paths_parser.parse
     Secrets.generate(path, key_path)
+    exit
   end
+
   parser.on("read", "Read the contents of the encrypted file") do
-    key_parser.parse
+    read_parser.parse
     secrets = Secrets.new
     paths = key
     if paths
@@ -44,8 +72,13 @@ parser = OptionParser.new do |parser|
     end
     exit
   end
+
   parser.on("edit", "Edit a value in the encrypted file") do
-    value_parser.parse
+    edit_parser.parse
+    if !key || !value
+      puts edit_parser
+      exit
+    end
     secrets = Secrets.new
     paths = key
     new_value = value
@@ -66,16 +99,22 @@ parser = OptionParser.new do |parser|
       end
       any[final_key] = new_value
       secrets.save
-    else
-      raise "Key/value path must be provided as an argument"
+      exit
     end
     exit
   end
+
   parser.on("-h", "--help", "Show this help") do
     puts parser
     exit
   end
+
   parser.on("-v", "--version", "Returns version") { puts "0.1.0" }
+
+  if ARGV.empty?
+    puts parser
+    exit
+  end
 end
 
 parser.parse
