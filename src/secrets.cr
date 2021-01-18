@@ -36,7 +36,7 @@ require "./secrets/any"
 class Secrets
   DEFAULT_PATH     = "secrets.yml.enc"
   DEFAULT_KEY_PATH = "secrets.key"
-  VERSION = "0.1.0"
+  VERSION          = "0.1.0"
 
   class MissingKeyError < RuntimeError
     def initialize
