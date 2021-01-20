@@ -152,6 +152,20 @@ class SecretsTest < Minitest::Test
     ENV.delete("SECRETS_KEY")
   end
 
+  def test_resets_key
+    generate_secrets
+
+    old_key = File.read(@default_key_path)
+    secrets = Secrets.new
+    secrets.reset
+    new_key = File.read(@default_key_path)
+
+    refute_equal old_key, new_key
+
+    secrets2 = Secrets.new
+    assert_equal "WARMACHINEROX", secrets["password"].as_s
+  end
+
   def test_generates_saves_and_loads_custom_files
     Secrets.generate("config/credentials.yml.enc", "config/master.key")
     assert File.exists?("config/credentials.yml.enc")

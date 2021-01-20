@@ -48,6 +48,7 @@ class Secrets
   end
 
   getter file_path : String
+  getter key_file_path : String
   @key : String
   @data : Any
 
@@ -58,7 +59,8 @@ class Secrets
   #
   def initialize(file_path = DEFAULT_PATH, key_path = DEFAULT_KEY_PATH)
     @file_path = Secrets.path_with_extension(file_path)
-    @key = load_key(Secrets.key_path_with_extension(key_path))
+    @key_file_path = Secrets.key_path_with_extension(key_path)
+    @key = load_key
 
     @data = load_data
   end
@@ -172,6 +174,15 @@ class Secrets
     @data.to_yaml
   end
 
+  # Generates a new encryption key, saves it to the key file, and encrypts the
+  # data file using the new key.
+  def reset
+    load_data
+    @key = Secrets.generate_key
+    File.write(@key_file_path, @key)
+    save
+  end
+
   protected def self.path_with_extension(path : String) : String
     extension = ".yml.enc"
     if path.ends_with? extension
@@ -199,17 +210,17 @@ class Secrets
     OpenSSL::Cipher.new("aes-256-cbc")
   end
 
-  private def load_key(key_path : String) : String
-    ENV["SECRETS_KEY"]? || read_key_file(key_path) || handle_missing_key
+  private def load_key : String
+    ENV["SECRETS_KEY"]? || read_key_file || handle_missing_key
   end
 
   private def handle_missing_key
     raise Secrets::MissingKeyError.new
   end
 
-  private def read_key_file(key_path : String) : String?
-    if File.exists?(key_path)
-      File.read(key_path)
+  private def read_key_file : String?
+    if File.exists?(@key_file_path)
+      File.read(@key_file_path)
     end
   end
 end
