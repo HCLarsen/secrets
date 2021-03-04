@@ -6,9 +6,7 @@ Encrypted credentials management system, largely based on [Rails/secrets](https:
 
 Offers a command line interface with [secrets-cli](https://github.com/HCLarsen/secrets-cli)
 
-## Shard
-
-### Installation
+## Installation
 
 1. Add the dependency to your `shard.yml`:
 
@@ -20,7 +18,7 @@ Offers a command line interface with [secrets-cli](https://github.com/HCLarsen/s
 
 2. Run `shards install`
 
-### Usage
+## Usage
 
 When the `Secrets` class is instantiated, it loads the data from an encoded YAML file. The key used to decode the data can either come from a local key file, or an environment variable named SECRETS_KEY.
 
@@ -59,27 +57,6 @@ secrets["API_KEY"].as_s           #=> "RANDOM_KEY"
 secrets["API2"]["EMAIL"].as_s     #=> "random@example.org"
 secrets["API2"]["PASSWORD"].as_s  #=> "DontUseACommonPassword"
 ```
-
-## CLI
-
-### Installation
-
-1. Clone this repo:
-
-```
-git clone https://github.com/HCLarsen/secrets.git
-```
-
-2. Build:
-```
-make build-cli
-```
-
-3. Move `secrets` file to a location in your $PATH.
-
-### Usage
-
-TODO: Write usage instructions here
 
 ## Development
 
