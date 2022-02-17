@@ -11,9 +11,9 @@ Offers a command line interface with [secrets-cli](https://github.com/HCLarsen/s
 1. Add the dependency to your `shard.yml`:
 
 ```yaml
-   dependencies:
-     secrets:
-       github: HCLarsen/secrets
+dependencies:
+  secrets:
+    github: HCLarsen/secrets
 ```
 
 2. Run `shards install`
