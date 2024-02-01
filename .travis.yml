@@ -1,6 +1,0 @@
-language: crystal
-crystal:
-  - latest
-
-script:
-  - make test
